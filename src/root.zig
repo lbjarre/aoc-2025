@@ -1,6 +1,6 @@
 const std = @import("std");
 
-const days = 3;
+const days = 4;
 
 pub fn solve(alloc: std.mem.Allocator, writer: *std.Io.Writer, day: u8) !void {
     const input = try readInput(alloc, day);
@@ -9,6 +9,7 @@ pub fn solve(alloc: std.mem.Allocator, writer: *std.Io.Writer, day: u8) !void {
         1 => @import("./day01.zig").solve(writer, input),
         2 => @import("./day02.zig").solve(writer, input),
         3 => @import("./day03.zig").solve(writer, input),
+        4 => @import("./day04.zig").solve(writer, input),
         else => error.InvalidDay,
     };
 }

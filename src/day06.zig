@@ -1,14 +1,11 @@
 const std = @import("std");
+const Context = @import("./root.zig").Context;
 
-pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
-    var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
-    defer arena.deinit();
-    const alloc = arena.allocator();
+pub fn solve(ctx: Context) !void {
+    const part1 = try solvePart1(ctx.alloc, ctx.input);
+    const part2 = try solvePart2(ctx.alloc, ctx.input);
 
-    const part1 = try solvePart1(alloc, input);
-    const part2 = try solvePart2(alloc, input);
-
-    try writer.print(
+    try ctx.writer.print(
         \\part1: {d}
         \\part2: {d}
         \\

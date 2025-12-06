@@ -1,10 +1,8 @@
 const std = @import("std");
+const Context = @import("./root.zig").Context;
 
-pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
-    const alloc = std.heap.page_allocator;
-
-    var database = try Database.parse(alloc, input);
-    defer database.deinit(alloc);
+pub fn solve(ctx: Context) !void {
+    var database = try Database.parse(ctx.alloc, ctx.input);
 
     // Part 1.
     var fresh_ids: u64 = 0;
@@ -24,7 +22,7 @@ pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
         total_ids += range.size();
     }
 
-    try writer.print(
+    try ctx.writer.print(
         \\part1: {d}
         \\part2: {d}
         \\

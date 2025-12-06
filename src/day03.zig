@@ -1,17 +1,18 @@
 const std = @import("std");
+const Context = @import("./root.zig").Context;
 
-pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
+pub fn solve(ctx: Context) !void {
     var part1: u64 = 0;
     var part2: u64 = 0;
 
-    var it = std.mem.splitSequence(u8, input, "\n");
+    var it = std.mem.splitSequence(u8, ctx.input, "\n");
     while (it.next()) |line| {
         if (line.len == 0) break;
         part1 += maxJoltage(line, 2);
         part2 += maxJoltage(line, 12);
     }
 
-    try writer.print(
+    try ctx.writer.print(
         \\part1: {d}
         \\part2: {d}
         \\

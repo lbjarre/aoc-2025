@@ -1,12 +1,11 @@
 const std = @import("std");
+const Context = @import("./root.zig").Context;
 
-pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
-    const alloc = std.heap.page_allocator;
-
-    var map = HM.init(alloc);
+pub fn solve(ctx: Context) !void {
+    var map = HM.init(ctx.alloc);
     defer map.deinit();
 
-    var it = std.mem.splitSequence(u8, input, "\n");
+    var it = std.mem.splitSequence(u8, ctx.input, "\n");
     var y: i16 = 0;
     var width: u16 = 0;
     var height: u16 = 0;
@@ -24,10 +23,10 @@ pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
     }
 
     const accessible = countAccessible(&map, width, height);
-    const removed = try remove(alloc, &map, width, height);
+    const removed = try remove(ctx.alloc, &map, width, height);
 
-    try writer.print("part1: {d}\n", .{accessible});
-    try writer.print("part2: {d}\n", .{removed});
+    try ctx.writer.print("part1: {d}\n", .{accessible});
+    try ctx.writer.print("part2: {d}\n", .{removed});
 }
 
 fn countAccessible(map: *HM, width: u16, height: u16) u32 {

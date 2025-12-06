@@ -1,25 +1,40 @@
 const std = @import("std");
 
-const days = 6;
+pub const Context = struct {
+    alloc: std.mem.Allocator,
+    writer: *std.Io.Writer,
+    input: []const u8,
+};
+
+const solvers = [_]*const fn (Context) anyerror!void{
+    @import("./day01.zig").solve,
+    @import("./day02.zig").solve,
+    @import("./day03.zig").solve,
+    @import("./day04.zig").solve,
+    @import("./day05.zig").solve,
+    @import("./day06.zig").solve,
+};
 
 pub fn solve(alloc: std.mem.Allocator, writer: *std.Io.Writer, day: u8) !void {
-    const input = try readInput(alloc, day);
-    defer alloc.free(input);
-    try switch (day) {
-        1 => @import("./day01.zig").solve(writer, input),
-        2 => @import("./day02.zig").solve(writer, input),
-        3 => @import("./day03.zig").solve(writer, input),
-        4 => @import("./day04.zig").solve(writer, input),
-        5 => @import("./day05.zig").solve(writer, input),
-        6 => @import("./day06.zig").solve(writer, input),
-        else => error.InvalidDay,
-    };
+    if (day - 1 >= solvers.len) return error.InvalidDay;
+    const solver = solvers[day - 1];
+
+    var arena = std.heap.ArenaAllocator.init(alloc);
+    defer arena.deinit();
+
+    const input = try readInput(arena.allocator(), day);
+
+    try solver(.{
+        .alloc = arena.allocator(),
+        .writer = writer,
+        .input = input,
+    });
 }
 
 pub fn solveAll(alloc: std.mem.Allocator, writer: *std.Io.Writer) !void {
-    for (1..days + 1) |day| {
-        try writer.print("day {d}\n", .{day});
-        try solve(alloc, writer, @intCast(day));
+    for (0..solvers.len) |day| {
+        try writer.print("day {d}\n", .{day + 1});
+        try solve(alloc, writer, @intCast(day + 1));
     }
 }
 

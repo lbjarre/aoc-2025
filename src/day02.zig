@@ -1,7 +1,8 @@
 const std = @import("std");
+const Context = @import("./root.zig").Context;
 
-pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
-    const input_trim = std.mem.trimEnd(u8, input, "\n");
+pub fn solve(ctx: Context) !void {
+    const input_trim = std.mem.trimEnd(u8, ctx.input, "\n");
 
     var part1: u64 = 0;
     var part2: u64 = 0;
@@ -23,7 +24,7 @@ pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
         }
     }
 
-    try writer.print(
+    try ctx.writer.print(
         \\part1: {d}
         \\part2: {d}
         \\

@@ -1,4 +1,21 @@
 const std = @import("std");
+const Context = @import("./root.zig").Context;
+
+pub fn solve(ctx: Context) !void {
+    var state: State = .{};
+    var it = std.mem.splitSequence(u8, ctx.input, "\n");
+    while (it.next()) |line| {
+        if (line.len == 0) break;
+        const turn = try Turn.parse(line);
+        state = state.rotate(turn);
+    }
+
+    try ctx.writer.print(
+        \\part1: {d}
+        \\part2: {d}
+        \\
+    , .{ state.end_on_zero, state.passed_zero });
+}
 
 const Turn = struct {
     direction: Direction,
@@ -52,22 +69,6 @@ const State = struct {
         };
     }
 };
-
-pub fn solve(writer: *std.Io.Writer, input: []const u8) !void {
-    var state: State = .{};
-    var it = std.mem.splitSequence(u8, input, "\n");
-    while (it.next()) |line| {
-        if (line.len == 0) break;
-        const turn = try Turn.parse(line);
-        state = state.rotate(turn);
-    }
-
-    try writer.print(
-        \\part1: {d}
-        \\part2: {d}
-        \\
-    , .{ state.end_on_zero, state.passed_zero });
-}
 
 test "test input" {
     var buf: [1024]u8 = undefined;

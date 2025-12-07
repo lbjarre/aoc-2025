@@ -2,7 +2,7 @@ const std = @import("std");
 const Context = @import("./root.zig").Context;
 
 pub fn solve(ctx: Context) !void {
-    var map = HM.init(ctx.alloc);
+    var map = HashMap.init(ctx.alloc);
     defer map.deinit();
 
     var it = std.mem.splitSequence(u8, ctx.input, "\n");
@@ -29,7 +29,7 @@ pub fn solve(ctx: Context) !void {
     try ctx.writer.print("part2: {d}\n", .{removed});
 }
 
-fn countAccessible(map: *HM, width: u16, height: u16) u32 {
+fn countAccessible(map: *HashMap, width: u16, height: u16) u32 {
     var accessible: u32 = 0;
     for (0..height) |y| {
         for (0..width) |x| {
@@ -58,7 +58,7 @@ fn countAccessible(map: *HM, width: u16, height: u16) u32 {
     return accessible;
 }
 
-fn remove(alloc: std.mem.Allocator, map: *HM, width: u16, height: u16) !u32 {
+fn remove(alloc: std.mem.Allocator, map: *HashMap, width: u16, height: u16) !u32 {
     var removed: u32 = 0;
     while (true) {
         const keys = try accessibleKeys(alloc, map, width, height);
@@ -72,7 +72,7 @@ fn remove(alloc: std.mem.Allocator, map: *HM, width: u16, height: u16) !u32 {
     }
 }
 
-fn accessibleKeys(alloc: std.mem.Allocator, map: *HM, width: u16, height: u16) ![]Key {
+fn accessibleKeys(alloc: std.mem.Allocator, map: *HashMap, width: u16, height: u16) ![]Key {
     var accessible: std.ArrayList(Key) = try .initCapacity(alloc, 0);
     defer accessible.deinit(alloc);
 
@@ -114,17 +114,7 @@ const Key = struct {
         return .{ .x = a.x + b.x, .y = a.y + b.y };
     }
 };
-const Ctx = struct {
-    pub fn hash(_: Ctx, key: Key) u64 {
-        var h = std.hash.Wyhash.init(0);
-        std.hash.autoHash(&h, key);
-        return h.final();
-    }
-    pub fn eql(_: Ctx, a: Key, b: Key) bool {
-        return a.x == b.x and a.y == b.y;
-    }
-};
-const HM = std.HashMap(Key, Cell, Ctx, std.hash_map.default_max_load_percentage);
+const HashMap = std.AutoHashMap(Key, Cell);
 
 const Cell = enum {
     roll,

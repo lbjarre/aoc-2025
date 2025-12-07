@@ -32,7 +32,7 @@ fn solvePart1(alloc: std.mem.Allocator, grid: Grid, start: Pos) !u32 {
         switch (cell) {
             '.', 'S' => {
                 const beam_next: Pos = .{ .x = beam.x, .y = beam.y + 1 };
-                if (grid.inBounds(beam_next) and !contains(Pos, beams.items, beam_next, Pos.eql)) {
+                if (grid.inBounds(beam_next) and !contains(Pos, beams.items, beam_next)) {
                     try beams.insert(alloc, 0, beam_next);
                 }
             },
@@ -40,10 +40,10 @@ fn solvePart1(alloc: std.mem.Allocator, grid: Grid, start: Pos) !u32 {
                 splits += 1;
                 const split_1: Pos = .{ .x = beam.x - 1, .y = beam.y + 1 };
                 const split_2: Pos = .{ .x = beam.x + 1, .y = beam.y + 1 };
-                if (grid.inBounds(split_1) and !contains(Pos, beams.items, split_1, Pos.eql)) {
+                if (grid.inBounds(split_1) and !contains(Pos, beams.items, split_1)) {
                     try beams.insert(alloc, 0, split_1);
                 }
-                if (grid.inBounds(split_2) and !contains(Pos, beams.items, split_2, Pos.eql)) {
+                if (grid.inBounds(split_2) and !contains(Pos, beams.items, split_2)) {
                     try beams.insert(alloc, 0, split_2);
                 }
             },
@@ -96,9 +96,9 @@ const Pos = struct {
     }
 };
 
-fn contains(comptime T: type, items: []const T, needle: T, comptime eql: fn (T, T) bool) bool {
+fn contains(comptime T: type, items: []const T, needle: T) bool {
     for (items) |item| {
-        if (eql(item, needle)) return true;
+        if (std.meta.eql(item, needle)) return true;
     }
     return false;
 }

@@ -2,24 +2,20 @@ const std = @import("std");
 const aoc2025 = @import("aoc2025");
 
 pub fn main() !void {
-    var gpa: std.heap.GeneralPurposeAllocator(.{}) = .init;
-    const alloc = gpa.allocator();
-
     var stdout_buf: [1024]u8 = undefined;
     var stdout_writer = std.fs.File.stdout().writer(&stdout_buf);
     var stdout = &stdout_writer.interface;
     defer stdout.flush() catch {};
 
-    const args = try std.process.argsAlloc(alloc);
-    defer std.process.argsFree(alloc, args);
-
-    if (args.len != 2) {
+    var args = std.process.args();
+    _ = args.next() orelse unreachable;
+    const arg = args.next() orelse {
         _ = try std.fs.File.stderr().write("usage: aoc2025 [DAY | 'all']\n");
-        return error.IncorrectArgs;
-    }
+        return error.InvalidArgs;
+    };
 
-    const mode = try Mode.parse(args[1]);
-    try mode.exec(alloc, stdout);
+    const mode = try Mode.parse(arg);
+    try mode.exec(std.heap.page_allocator, stdout);
 }
 
 const Mode = union(enum) {

@@ -14,6 +14,7 @@ const solvers = [_]*const fn (Context) anyerror!void{
     @import("./day05.zig").solve,
     @import("./day06.zig").solve,
     @import("./day07.zig").solve,
+    @import("./day08.zig").solve,
 };
 
 pub fn solve(alloc: std.mem.Allocator, writer: *std.Io.Writer, day: u8) !void {

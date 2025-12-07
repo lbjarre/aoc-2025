@@ -3,6 +3,7 @@ const Context = @import("./root.zig").Context;
 
 pub fn solve(ctx: Context) !void {
     var database = try Database.parse(ctx.alloc, ctx.input);
+    defer database.deinit(ctx.alloc);
 
     // Part 1.
     var fresh_ids: u64 = 0;
@@ -165,7 +166,7 @@ test "test input" {
     var buf: [128]u8 = undefined;
     var writer = std.Io.Writer.fixed(&buf);
 
-    try solve(&writer, input);
+    try solve(.{ .writer = &writer, .input = input, .alloc = std.testing.allocator });
     const got = writer.buffered();
     try std.testing.expectEqualStrings(want, got);
 }

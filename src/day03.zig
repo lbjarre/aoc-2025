@@ -62,7 +62,7 @@ test "test input" {
     var buf: [128]u8 = undefined;
     var writer = std.Io.Writer.fixed(&buf);
 
-    try solve(&writer, input);
+    try solve(.{ .writer = &writer, .input = input, .alloc = std.testing.allocator });
     const got = writer.buffered();
     try std.testing.expectEqualStrings(want, got);
 }

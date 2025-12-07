@@ -87,7 +87,7 @@ test "test input" {
         \\L82
     ;
 
-    try solve(&writer, input);
+    try solve(.{ .writer = &writer, .input = input, .alloc = std.testing.allocator });
     const want =
         \\part1: 3
         \\part2: 6

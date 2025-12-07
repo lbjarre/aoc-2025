@@ -51,3 +51,7 @@ fn readInput(alloc: std.mem.Allocator, day: u8) ![]const u8 {
 
     return try std.fs.cwd().readFileAlloc(alloc, filename, 100 * 1024);
 }
+
+test {
+    std.testing.refAllDecls(@This());
+}

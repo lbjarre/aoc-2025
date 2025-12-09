@@ -52,16 +52,14 @@ fn calculateDistances(alloc: std.mem.Allocator, boxes: []Coord) !std.ArrayList(J
     return dists;
 }
 
-fn solvePart1(alloc: std.mem.Allocator, distances: std.ArrayList(JunctionPair), comptime num_connections: u32) !u32 {
+fn solvePart1(allocator: std.mem.Allocator, distances: std.ArrayList(JunctionPair), comptime num_connections: u32) !u32 {
+    var arena: std.heap.ArenaAllocator = .init(allocator);
+    defer arena.deinit();
+    const alloc = arena.allocator();
+
     const dists = distances.items[0..num_connections];
 
     var circuits: std.ArrayList(Circuit) = .empty;
-    defer {
-        for (circuits.items) |*circuit| {
-            circuit.deinit(alloc);
-        }
-        circuits.deinit(alloc);
-    }
 
     for (dists) |d| {
         var connected_to: std.ArrayList(usize) = .empty;
@@ -102,14 +100,12 @@ fn solvePart1(alloc: std.mem.Allocator, distances: std.ArrayList(JunctionPair), 
     return a * b * c;
 }
 
-fn solvePart2(alloc: std.mem.Allocator, distances: std.ArrayList(JunctionPair), boxes: []const Coord) !u64 {
+fn solvePart2(allocator: std.mem.Allocator, distances: std.ArrayList(JunctionPair), boxes: []const Coord) !u64 {
+    var arena: std.heap.ArenaAllocator = .init(allocator);
+    defer arena.deinit();
+    const alloc = arena.allocator();
+
     var circuits: std.ArrayList(Circuit) = .empty;
-    defer {
-        for (circuits.items) |*circuit| {
-            circuit.deinit(alloc);
-        }
-        circuits.deinit(alloc);
-    }
 
     for (distances.items) |d| {
         var connected_to: std.ArrayList(usize) = .empty;
